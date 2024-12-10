@@ -1,6 +1,7 @@
 type Arguments = {
-  endpoint: string
-  body: any
+  endpoint: string;
+  body: any;
+  pixelId: string;
 };
 
 /**
@@ -10,9 +11,7 @@ type Arguments = {
  * @param body
  * @constructor
  */
-const graphApi = async <T>({ endpoint = '', body = null }: Arguments): Promise<T> => {
-  const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID ?? '';
-
+const graphApi = async <T>({ endpoint = '', body = null, pixelId }: Arguments): Promise<T> => {
   const request = new Request(`https://graph.facebook.com/v13.0/${pixelId}/${endpoint}`, {
     method: 'POST',
     ...(body && { body }),
@@ -26,3 +25,4 @@ const graphApi = async <T>({ endpoint = '', body = null }: Arguments): Promise<T
 };
 
 export default graphApi;
+

@@ -8,24 +8,12 @@ declare global {
   }
 }
 
-/**
- * Trigger Facebook PageView Event (Standard Pixel).
- *
- * @constructor
- */
-const fbPageView = (): void => {
+const fbPageView = (pixelId: string): void => {
   debug('Client Side Event: PageView');
-
   window.fbq('track', 'PageView');
 };
 
-/**
- * Trigger custom Facebook Event (Conversion API and optionally Standard Pixel).
- *
- * @param event
- * @constructor
- */
-const fbEvent = (event: FBEvent): void => {
+const fbEvent = (event: FBEvent & { pixelId: string; accessToken: string }): void => {
   const eventId = event.eventId ? event.eventId : uuidv4();
 
   if (event.enableStandardPixel) {
@@ -67,6 +55,8 @@ const fbEvent = (event: FBEvent): void => {
       userAgent: navigator.userAgent,
       sourceUrl: window.location.href,
       testEventCode: event.testEventCode,
+      accessToken: event.accessToken,
+      pixelId: event.pixelId,
     });
 
     fetch('/api/fb-events', {
@@ -85,3 +75,4 @@ const fbEvent = (event: FBEvent): void => {
 };
 
 export { fbEvent, fbPageView };
+

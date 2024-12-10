@@ -3,20 +3,22 @@ import { useRouter } from 'next/router';
 import { fbPageView } from '../conversion-api';
 
 type Props = {
-  children: React.ReactNode
+  children: React.ReactNode;
+  pixelId: string;
+  accessToken: string;
 };
 
-const FBPixelProvider = ({ children }: Props) => {
+const FBPixelProvider = ({ children, pixelId, accessToken }: Props) => {
   const router = useRouter();
 
   useEffect(() => {
-    fbPageView();
+    fbPageView(pixelId);
 
-    router.events.on('routeChangeComplete', fbPageView);
+    router.events.on('routeChangeComplete', () => fbPageView(pixelId));
     return () => {
-      router.events.off('routeChangeComplete', fbPageView);
+      router.events.off('routeChangeComplete', () => fbPageView(pixelId));
     };
-  }, [router.events]);
+  }, [router.events, pixelId]);
 
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
@@ -27,3 +29,4 @@ const FBPixelProvider = ({ children }: Props) => {
 };
 
 export default FBPixelProvider;
+

@@ -21,6 +21,8 @@ type Arguments = {
   userAgent: string
   sourceUrl: string
   testEventCode?: string
+  accessToken: string;
+  pixelId: string;
 };
 
 /**
@@ -35,14 +37,6 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({
       message: 'This route only accepts POST requests',
     });
-  }
-
-  if (!process.env.FB_ACCESS_TOKEN) {
-    throw new Error('Missing FB_ACCESS_TOKEN in environment file.');
-  }
-
-  if (!process.env.NEXT_PUBLIC_FB_PIXEL_ID) {
-    throw new Error('Missing NEXT_PUBLIC_FB_PIXEL_ID in environment file.');
   }
 
   const {
@@ -61,11 +55,13 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     userAgent,
     sourceUrl,
     testEventCode,
+    accessToken,
+    pixelId,
   } = req.body as Arguments;
 
-  if (!eventName) {
+  if (!eventName || !accessToken || !pixelId) {
     return res.status(400).json({
-      error: 'The request body is missing required parameters: eventName',
+      error: 'The request body is missing required parameters: eventName, accessToken, or pixelId',
     });
   }
 
@@ -88,6 +84,8 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     userAgent,
     sourceUrl,
     testEventCode,
+    accessToken,
+    pixelId,
   };
 
   const response = await sendServerSideEvent(payload);
@@ -109,3 +107,4 @@ const eventHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 export default eventHandler;
+

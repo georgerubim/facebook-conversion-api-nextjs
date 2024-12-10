@@ -24,6 +24,8 @@ type Arguments = {
   userAgent: string
   sourceUrl: string
   testEventCode?: string
+  accessToken: string;
+  pixelId: string;
 };
 
 type Response = {
@@ -72,6 +74,8 @@ const sendServerSideEvent = async ({
   userAgent,
   sourceUrl,
   testEventCode,
+  accessToken,
+  pixelId,
 }: Arguments): Promise<Response> => {
   const formData = new FormData();
 
@@ -131,15 +135,16 @@ const sendServerSideEvent = async ({
     formData.append('test_event_code', testEventCode);
   }
 
-  formData.append('access_token', process.env.FB_ACCESS_TOKEN ?? '');
+  formData.append('access_token', accessToken);
 
   return graphApi({
     endpoint: 'events',
     body: formData,
+    pixelId,
   });
 };
 
 export {
-  // eslint-disable-next-line import/prefer-default-export
   sendServerSideEvent,
 };
+
